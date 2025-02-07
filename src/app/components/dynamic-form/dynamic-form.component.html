@@ -1,0 +1,63 @@
+<div class="container">
+  <mat-toolbar color="primary">Dynamic Form Builder</mat-toolbar>
+  <mat-card>
+    <h2>Select Field Type</h2>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Field Type</mat-label>
+      <mat-select (selectionChange)="selectFieldType($event.value)">
+        <mat-option *ngFor="let field of fieldTypes" [value]="field.value">{{ field.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card>
+
+  <mat-card>
+    <h3>Global Field Settings</h3>
+    <mat-divider></mat-divider>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Label</mat-label>
+      <input matInput [(ngModel)]="globalSettings.label">
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Placeholder</mat-label>
+      <input matInput [(ngModel)]="globalSettings.placeholder">
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="globalSettings.required">Required</mat-checkbox>
+    <button mat-raised-button color="accent" (click)="saveFieldDetails()">Save Field Details</button>
+  </mat-card>
+
+  <form [formGroup]="form">
+    <mat-card>
+      <h3>Generated Form</h3>
+      <mat-divider></mat-divider>
+      <div formArrayName="fields">
+        <div *ngFor="let field of fields.controls; let i = index" [formGroupName]="i">
+          <mat-form-field *ngIf="field.value.type === 'text'" appearance="outline" class="full-width">
+            <mat-label>{{ field.value.label }}</mat-label>
+            <input matInput [placeholder]="field.value.placeholder" formControlName="value" [required]="field.value.required">
+          </mat-form-field>
+
+          <mat-form-field *ngIf="field.value.type === 'textarea'" appearance="outline" class="full-width">
+            <mat-label>{{ field.value.label }}</mat-label>
+            <textarea matInput [placeholder]="field.value.placeholder" formControlName="value" [required]="field.value.required"></textarea>
+          </mat-form-field>
+
+          <mat-checkbox *ngIf="field.value.type === 'checkbox'" formControlName="value">{{ field.value.label }}</mat-checkbox>
+
+          <mat-radio-group *ngIf="field.value.type === 'radio'" formControlName="value">
+            <mat-radio-button value="option1">Option 1</mat-radio-button>
+            <mat-radio-button value="option2">Option 2</mat-radio-button>
+          </mat-radio-group>
+
+          <mat-form-field *ngIf="field.value.type === 'select'" appearance="outline" class="full-width">
+            <mat-label>{{ field.value.label }}</mat-label>
+            <mat-select formControlName="value">
+              <mat-option value="option1">Option 1</mat-option>
+              <mat-option value="option2">Option 2</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card>
+    <button mat-raised-button color="primary" (click)="saveFormDetails()">Save Form Details</button>
+  </form>
+</div>
